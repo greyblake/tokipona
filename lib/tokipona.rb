@@ -1,5 +1,5 @@
 require "tokipona/version"
+require "tokipona/tokenizer"
 
 module Tokipona
-  # Your code goes here...
 end
