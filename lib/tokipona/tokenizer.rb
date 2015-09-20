@@ -1,5 +1,13 @@
 module Tokipona
+  # Splits text into tokens (words and punctuations).
+  #
+  # @example
+  #   Tokipona::Tokenizer.tokenize("mi pona anu seme?")
+  #   # => ["mi", "pona", "anu", "seme", "?"]
   class Tokenizer
+    # @param text [String]
+    #
+    # @return [Array<String>]
     def self.tokenize(text)
       new(text).tokenize
     end
@@ -15,7 +23,7 @@ module Tokipona
         process_char(char)
       end
 
-      # Add the latest token to @tokens
+      # Add the latest token to +@tokens+
       add_token!
 
       @tokens
