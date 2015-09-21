@@ -32,13 +32,12 @@ describe Tokipona::Tokenizer do
 
     context "words with punctuations" do
       it "returns array of words and punctuations" do
-        text = "pona. toki e mi, anu seme?"
+        text = "pona. toki mi, anu seme?"
         tokens = described_class.tokenize(text)
         expect(tokens).to eq [
           { lexeme: "pona", type: :word }        ,
           { lexeme: "."   , type: :punctuation } ,
           { lexeme: "toki", type: :word }        ,
-          { lexeme: "e"   , type: :word },
           { lexeme: "mi"  , type: :word },
           { lexeme: ","   , type: :punctuation },
           { lexeme: "anu" , type: :word },
