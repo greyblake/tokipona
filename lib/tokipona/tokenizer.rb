@@ -1,10 +1,22 @@
 module Tokipona
-  # Splits text into tokens (words and punctuations).
+  # Splits text into tokens (words, punctuations and smiles).
   #
   # @example
-  #   Tokipona::Tokenizer.tokenize("mi pona anu seme?")
-  #   # => ["mi", "pona", "anu", "seme", "?"]
+  #   Tokipona::Tokenizer.tokenize("pona. anu seme? :D")
+  #   # => [
+  #   #  { lexeme: "pona", type: :word },
+  #   #  { lexeme: "."   , type: punctuation },
+  #   #  { lexeme: "anu" , type: :word },
+  #   #  { lexeme: "seme", type: :word },
+  #   #  { lexeme: "?"   , type: :punctuation},
+  #   #  { lexeme: ":D"  , type: :smile},
+  #   # ]
   class Tokenizer
+    WORD_REGEXP = /\w+/
+    SMILE_REGEXP = /(?::|;) -? (?: \) | \| | \\ | \/ | D )/x
+    PUNCTUATION_REGEX = /[^\s]/
+    TOKEN_REGEXP = /#{WORD_REGEXP}|#{SMILE_REGEXP}|#{PUNCTUATION_REGEX}/
+
     # @param text [String]
     #
     # @return [Array<String>]
@@ -14,38 +26,27 @@ module Tokipona
 
     def initialize(text)
       @text = text
-      @tokens = []
-      @current_token = ""
     end
 
     def tokenize
-      @text.each_char do |char|
-        process_char(char)
-      end
-
-      # Add the latest token to +@tokens+
-      add_token!
-
-      @tokens
+      lexemes = @text.scan(TOKEN_REGEXP)
+      lexemes.map { |lex| lexeme_to_token(lex) }
     end
 
-    private def process_char(char)
-      case char
-      when "a".."z", "A".."Z"
-        @current_token << char
-      when " "
-        add_token!
+    private def lexeme_to_token(lexeme)
+      {
+        lexeme: lexeme,
+        type: token_type(lexeme)
+      }
+    end
+
+    private def token_type(lexeme)
+      if lexeme =~ SMILE_REGEXP
+        :smile
+      elsif lexeme =~ WORD_REGEXP
+        :word
       else
-        # Any other character we consider as a separate token
-        add_token!
-        @current_token << char
-      end
-    end
-
-    private def add_token!
-      if !@current_token.empty?
-        @tokens << @current_token
-        @current_token = ""
+        :punctuation
       end
     end
   end
