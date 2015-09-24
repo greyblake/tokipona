@@ -13,7 +13,14 @@ module Tokipona
   #   # ]
   class Tokenizer
     WORD_REGEXP = /\w+/
-    SMILE_REGEXP = /(?::|;) -? (?: \) | \| | \\ | \/ | D )/x
+    SMILE_REGEXP = /
+      (?:
+        (?: : | ; | = )
+        -?
+        (?: \) | \| | \\ | \/ | D | P | p )
+      ) | (?:x|X)D
+    /x
+
     PUNCTUATION_REGEX = /[^\s]/
     TOKEN_REGEXP = /#{WORD_REGEXP}|#{SMILE_REGEXP}|#{PUNCTUATION_REGEX}/
 
