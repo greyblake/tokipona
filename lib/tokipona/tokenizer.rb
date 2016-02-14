@@ -12,21 +12,23 @@ module Tokipona
   #   #  { lexeme: ":D"  , type: :smile},
   #   # ]
   class Tokenizer
-    WORD_REGEXP = /\w+/
     SMILE_REGEXP = /
       (?:
-        (?: : | ; | = )
-        -?
-        (?: \) | \| | \\ | \/ | D | P | p )
-      ) | (?:x|X)D
+        (?: : | ; | = )                            # eyes
+        -?                                         # nose
+        (?: \) | \| | \\ | \/ | D | P | p | \* )   # mouth
+      ) | (?:x|X)D                                 # indivudal smiles (e.g. XD)
     /x
 
-    PUNCTUATION_REGEX = /[^\s]/
-    TOKEN_REGEXP = /#{WORD_REGEXP}|#{SMILE_REGEXP}|#{PUNCTUATION_REGEX}/
+    WORD_REGEXP = /\w+/
+
+    PUNCTUATION_REGEX = /[^\s]+/
+
+    LEXEME_REGEXP = /#{SMILE_REGEXP}|#{WORD_REGEXP}|#{PUNCTUATION_REGEX}/
 
     # @param text [String]
     #
-    # @return [Array<String>]
+    # @return [Array<Hash>]
     def self.tokenize(text)
       new(text).tokenize
     end
@@ -36,24 +38,19 @@ module Tokipona
     end
 
     def tokenize
-      lexemes = @text.scan(TOKEN_REGEXP)
+      lexemes = @text.scan(LEXEME_REGEXP)
       lexemes.map { |lex| lexeme_to_token(lex) }
     end
 
     private def lexeme_to_token(lexeme)
-      {
-        lexeme: lexeme,
-        type: token_type(lexeme)
-      }
+      { lexeme: lexeme, type: token_type(lexeme) }
     end
 
     private def token_type(lexeme)
-      if lexeme =~ SMILE_REGEXP
-        :smile
-      elsif lexeme =~ WORD_REGEXP
-        :word
-      else
-        :punctuation
+      case lexeme
+      when SMILE_REGEXP then :smile
+      when WORD_REGEXP  then :word
+      else :punctuation
       end
     end
   end
