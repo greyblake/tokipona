@@ -20,7 +20,7 @@ module Tokipona
       ) | (?:x|X)D                                 # indivudal smiles (e.g. XD)
     /x
 
-    WORD_REGEXP = /\w+/
+    WORD_REGEXP = /[a-zA-Z0-9]+/
 
     PUNCTUATION_REGEX = /[^\s]+/
 
